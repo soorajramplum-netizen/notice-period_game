@@ -1,0 +1,36 @@
+{
+  "name": "notice-period",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "astryx": "node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs",
+    "predev": "node scripts/parse-script.mjs",
+    "prebuild": "node scripts/parse-script.mjs",
+    "script": "node scripts/parse-script.mjs"
+  },
+  "dependencies": {
+    "@astryxdesign/core": "^0.7.17",
+    "@astryxdesign/theme-neutral": "^0.7.17",
+    "@stylexjs/stylex": "^0.19.2",
+    "next": "16.4.6",
+    "phaser": "^4.2.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@astryxdesign/cli": "^0.7.17",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "typescript": "^5"
+  },
+  "allowScripts": {
+    "@astryxdesign/core@0.7.17": true
+  }
+}
