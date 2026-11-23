@@ -1,7 +1,9 @@
 # Notice Period
 
 You quit with no offer in hand. Land a new job while the company dumps work on you, blames you for everything and steals your credit.
-A motion-comic arcade game in 5 Issues and 15 mini games, finished in one sitting (25–30 min).
+A motion-comic arcade game in 5 Issues and 17 levels (~30 min). Two ways to play:
+- **Story Mode:** the full comic. Progress saves on the device after every page, choice and level, so you can stop and resume any time (Continue shows where you'll land).
+- **Free Play:** skip the story and play any of the 18 games (17 story levels + a Stress Buster bonus) on Easy, Medium or Hard. Best stars are saved per game and difficulty.
 
 **Status:** v0.1 playable end to end. The art is placeholder SVG characters; the story, all 15 games, branches and endings work.
 
@@ -34,7 +36,9 @@ Computer = mouse plus keys: arrows (maze, stealth, crossing, pong, invaders, bos
 - **The rules** (`lib/rules.ts`): starting meters, the offer threshold, ending conditions. Tune balance there.
 - **The mini games** (`games/*.ts`): one Phaser scene each, sharing helpers in `games/kit.ts`. Each reports 0–3 stars.
 
-| Level | Game | File |
+Level ids are stable; the number players see comes from the story order in the script.
+
+| Level id | Game | File |
 |---|---|---|
 | 1 The Draft | Rage-to-Polite | `games/rage.ts` |
 | 2 The Quick Call | Darts | `games/darts.ts` |
@@ -51,6 +55,9 @@ Computer = mouse plus keys: arrows (maze, stealth, crossing, pong, invaders, bos
 | 13 No-Dues Crossing | Laptop Run | `games/crossing.ts` |
 | 14 Reply-All Storm | Inbox Invaders | `games/invaders.ts` |
 | 15 The Relieving Letter | Boss Fight | `games/boss.ts` |
+| 16 The Bin *(first level)* | Paper Toss | `games/toss.ts` |
+| 17 One Last Quick Call *(before the final boss)* | Office Brawl, 2D fight | `games/fight.ts` |
+| 18 Stress Buster *(Free Play bonus)* | Smash the office | `games/smash.ts` |
 
 ## Stack
 - Next.js (App Router, TypeScript) · [Phaser 4](https://phaser.io) (MIT) for the mini games ·

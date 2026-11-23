@@ -197,6 +197,89 @@
       {
        "kind": "panel",
        "label": "",
+       "desc": "Back at the desk. Captain Quick-Call drops a printed copy of the appraisal on {HERO}'s keyboard. Then a second copy, \"for your records\". Then a third, \"for HR\".",
+       "lines": [
+        {
+         "who": "CAPTAIN QUICK-CALL",
+         "mode": "",
+         "text": "Sign all three. Physically. We're old school about feedback."
+        }
+       ]
+      },
+      {
+       "kind": "panel",
+       "label": "close-up",
+       "desc": "{HERO} crumples the first copy into a tight ball. Across the aisle, past the Yes-Men's desks, sits the office bin. A desk fan creaks back and forth.",
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "Some people meditate. {HERO} had a bin and ten printouts."
+        },
+        {
+         "who": "SFX",
+         "mode": "",
+         "text": "KRRRNCH"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "level",
+     "n": 16,
+     "title": "THE BIN",
+     "game": "Paper Toss",
+     "intro": "Ten printouts. One bin. One office fan that hates you.",
+     "results": {
+      "0": {
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "Paper everywhere. Admin sends an all-staff email: \"Reminder: Clean Desk Policy\". It is very clearly about {HERO}."
+        }
+       ],
+       "fx": {
+        "blame": 5
+       }
+      },
+      "2": {
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "Most of them land. One bounces off the rim and rolls under Captain Quick-Call's chair. He doesn't notice. Yet."
+        }
+       ],
+       "fx": {}
+      },
+      "3": {
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "Nothing but bin. A Yes-Man looks up, almost impressed."
+        },
+        {
+         "who": "{HERO}",
+         "mode": "thought",
+         "text": "First thing I've finished here in months."
+        }
+       ],
+       "fx": {
+        "sanity": 1
+       }
+      }
+     }
+    },
+    {
+     "type": "page",
+     "label": "",
+     "panels": [
+      {
+       "kind": "panel",
+       "label": "",
        "desc": "The open office. A huge TV on the wall shows THE OVERLORD, the CEO: a giant, glowing head, filmed from below like a statue.",
        "lines": [
         {
@@ -2977,6 +3060,143 @@
         }
        ],
        "fx": {
+        "sanity": 2
+       }
+      }
+     }
+    },
+    {
+     "type": "page",
+     "label": "",
+     "panels": [
+      {
+       "kind": "panel",
+       "label": "",
+       "desc": "The Reply-All storm finally settles. {HERO} grabs the backpack and heads for the exit. The corridor is empty. Too empty.",
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "DAY 56. 6:58 PM. Two minutes to freedom."
+        }
+       ]
+      },
+      {
+       "kind": "panel",
+       "label": "wide",
+       "desc": "At the glass exit door, a silhouette. Phone in hand. Lanyard swinging like a pendulum. Captain Quick-Call.",
+       "lines": [
+        {
+         "who": "CAPTAIN QUICK-CALL",
+         "mode": "",
+         "text": "Leaving without our one last quick call?"
+        },
+        {
+         "who": "SFX",
+         "mode": "",
+         "text": "CLICK."
+        }
+       ]
+      },
+      {
+       "kind": "panel",
+       "label": "close-up",
+       "desc": "{HERO} drops the backpack and rolls up their sleeves.",
+       "lines": [
+        {
+         "who": "{HERO}",
+         "mode": "",
+         "text": "I'm off the clock."
+        },
+        {
+         "who": "CAPTAIN QUICK-CALL",
+         "mode": "",
+         "text": "Nobody is ever off the clock."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "page",
+     "label": "SPLASH",
+     "panels": [
+      {
+       "kind": "splash",
+       "label": "SPLASH",
+       "desc": "The two face off in the empty office. Cubicle walls form an arena. The green EXIT sign glows behind the Captain. The fluorescent lights flicker like a stadium.",
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "Every hero gets one fair fight."
+        },
+        {
+         "who": "SFX",
+         "mode": "",
+         "text": "ROUND 1 · FIGHT!"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "level",
+     "n": 17,
+     "title": "ONE LAST QUICK CALL",
+     "game": "Office Brawl",
+     "intro": "He's blocking the exit. Punch, kick, block, and charge up your resignation letter.",
+     "results": {
+      "0": {
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "The Captain dusts off his shirt and sends a fresh invite: \"Q1 Planning (owner: {HERO})\"."
+        },
+        {
+         "who": "CAPTAIN QUICK-CALL",
+         "mode": "",
+         "text": "See you Monday!"
+        }
+       ],
+       "fx": {
+        "blame": 15,
+        "sanity": -2
+       }
+      },
+      "2": {
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "{HERO} wins, barely, collar askew. The Captain picks up his phone and pretends he was leaving anyway."
+        },
+        {
+         "who": "CAPTAIN QUICK-CALL",
+         "mode": "",
+         "text": "Good chat."
+        }
+       ],
+       "fx": {
+        "blame": -5
+       }
+      },
+      "3": {
+       "lines": [
+        {
+         "who": "CAPTION",
+         "mode": "",
+         "text": "K.O.! Captain Quick-Call's phone skids across the carpet. The screen reads \"Call ended · 0:47\"."
+        },
+        {
+         "who": "CAPTAIN QUICK-CALL",
+         "mode": "",
+         "text": "...Let's circle back. Never."
+        }
+       ],
+       "fx": {
+        "blame": -15,
         "sanity": 2
        }
       }

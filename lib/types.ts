@@ -31,8 +31,12 @@ export type Comic = { sequences: Record<string, Sequence> };
 /** What every mini game receives. */
 export type Device = 'mobile' | 'desktop';
 
+export type Difficulty = 'easy' | 'medium' | 'hard';
+
 export type GameCtx = {
   device: Device;
+  /** Set in Free Play only; the story uses Sanity instead. */
+  difficulty?: Difficulty;
   sanity: number;
   hard: boolean;
   stars: Record<number, number>;

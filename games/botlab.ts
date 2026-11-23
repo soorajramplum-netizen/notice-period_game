@@ -196,6 +196,45 @@ export const BOTS: Record<string, Bot> = {
       if (Math.abs(sc.pen.y - target.y) < 18 && Math.abs(sc.pen.x - target.x) < 100) sc.onUp({ x: sc.pen.x, y: sc.pen.y });
     }
   },
+  toss(sc, dt, m, k) {
+    m.t = (m.t ?? 0) + dt;
+    if (sc.flying || sc.throws <= 0 || m.t < 700) return;
+    m.t = 0;
+    // swipe so the ball lands at the bin, leaning into the fan's wind (humans misjudge it a bit)
+    const windRead = sc.wind * (0.75 + 0.25 * k + (R() - 0.5) * 0.4 * (1 - k));
+    const vx = 200 - 200 - 0.5 * windRead;
+    const noise = 1 - k;
+    // a thumb swipe is imprecise: about ±12% power and ±25 px sideways for an average player
+    sc.launch(vx / 1.6 + (R() - 0.5) * 2 * (10 + 30 * noise), 260 * (1 + (R() - 0.5) * 2 * (0.05 + 0.13 * noise)));
+  },
+  fight(sc, dt, m, k) {
+    const h = sc.hero, b = sc.boss;
+    const dist = Math.abs(b.x - h.x);
+    sc.held.left = false; sc.held.right = false; sc.held.block = false;
+    if (b.act === 'windup') {
+      m.saw = (m.saw ?? 0) + dt;
+      if (m.saw > (m.r ??= react(k))) {
+        if (b.move === 'grab') { if (h.x < b.x) sc.held.left = true; else sc.held.right = true; }
+        else if (R() < 0.85 + 0.15 * k) sc.held.block = true;
+      }
+      return;
+    }
+    m.saw = 0; m.r = undefined;
+    if (sc.projs.some((p: any) => !p.fromHero && Math.abs(p.o.x - h.x) < 120) && R() < acc(k)) { sc.held.block = true; return; }
+    if (sc.meter >= 100) sc.heroSpecial();
+    if (dist > 72) { if (h.x < b.x) sc.held.right = true; else sc.held.left = true; return; }
+    m.t = (m.t ?? 0) + dt;
+    if (m.t > 220 + 200 * (1 - k)) { m.t = 0; if (R() < acc(k)) sc.heroAttack(R() < 0.6 ? 'punch' : 'kick'); }
+  },
+  smash(sc, dt, m, k) {
+    for (const th of sc.things) {
+      if (!th.o.active || th.hp <= 0) continue;
+      th._age = (th._age ?? 0) + dt;
+      if (th.bad) { if (!th._d && th._age > 300) { th._d = true; if (R() < 0.06 * (1 - k)) sc.smash(th); } continue; }
+      th._next ??= react(k) * 0.8;
+      if (th._age > th._next) { th._next = th._age + 120 + 140 * (1 - k); if (R() < acc(k)) sc.smash(th); }
+    }
+  },
 };
 
 const yieldUI = () => new Promise<void>((r) => { const c = new MessageChannel(); c.port1.onmessage = () => r(); c.port2.postMessage(0); });
@@ -216,6 +255,7 @@ export async function runLevel(key: string, runs: number, k: number, extra: Part
   g.loop.stop();
   const counts = [0, 0, 0, 0];
   const secs: number[] = [];
+  const scores: number[] = [];
   const dt = 1000 / 30;
   let t = 0;
   // Tweens time themselves with Date.now(); point it at the simulated clock while the bots play.
@@ -240,6 +280,7 @@ export async function runLevel(key: string, runs: number, k: number, extra: Part
       if (!sc.ended) BOTS[key](sc, dt, mem, k);
     }
     const s = sc.lastStars >= 0 ? sc.lastStars : 0;
+    if (typeof sc.score === 'number') scores.push(sc.score);
     counts[s]++;
     secs.push(steps / 30);
     if (run % 4 === 3) { Date.now = realNow; await yieldUI(); Date.now = () => simNow; }
@@ -248,5 +289,5 @@ export async function runLevel(key: string, runs: number, k: number, extra: Part
   g.destroy(true);
   div.remove();
   const avgStars = (counts[1] + 2 * counts[2] + 3 * counts[3]) / runs;
-  return { counts, avgStars: Math.round(avgStars * 100) / 100, avgSeconds: Math.round(secs.reduce((a, b) => a + b, 0) / runs) };
+  return { counts, avgStars: Math.round(avgStars * 100) / 100, avgSeconds: Math.round(secs.reduce((a, b) => a + b, 0) / runs), avgScore: scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null };
 }

@@ -10,14 +10,37 @@ export const RULES = {
   blameLimit: 100,
   /** Win endings (tuned with scripts/simulate.mjs). */
   boomerangBlame: 5,
-  cleanStars: 40,
+  cleanStars: 45, // of 51 (17 story levels)
 };
 
-/** Level number -> mini-game module (games/<key>.ts). */
+/** Level id -> mini-game module (games/<key>.ts). Ids are stable; the order players see comes from the script. */
 export const LEVEL_GAMES: Record<number, string> = {
   1: 'rage', 2: 'darts', 3: 'maze', 4: 'slice', 5: 'slingshot', 6: 'pong', 7: 'alttab', 8: 'stealth',
   9: 'stack', 10: 'runner', 11: 'pour', 12: 'poker', 13: 'crossing', 14: 'invaders', 15: 'boss',
+  16: 'toss', 17: 'fight', 18: 'smash',
 };
+
+/** Free Play catalogue, in story order, plus bonus games that aren't in the story. */
+export const FREE_PLAY: { id: number; title: string; game: string; bonus?: boolean }[] = [
+  { id: 16, title: 'The Bin', game: 'Paper Toss' },
+  { id: 1, title: 'The Draft', game: 'Rage-to-Polite' },
+  { id: 2, title: 'The Quick Call', game: 'Darts' },
+  { id: 3, title: 'The Portal', game: 'HR Portal Maze' },
+  { id: 4, title: 'Calendar Carnage', game: 'Slice the Invites' },
+  { id: 5, title: 'Apply-o-Matic', game: 'CV Slingshot' },
+  { id: 6, title: 'Blame Pong', game: 'Pong' },
+  { id: 7, title: 'Boss Is Coming', game: 'Alt-Tab Reflex' },
+  { id: 8, title: 'The Great Sneak', game: 'Office Stealth' },
+  { id: 9, title: 'Tell Me About Yourself', game: 'Résumé Stack' },
+  { id: 10, title: 'The Chase', game: 'Office Runner' },
+  { id: 11, title: 'The Brain Dump', game: 'Pour the KT' },
+  { id: 12, title: 'The Number', game: 'Salary Poker' },
+  { id: 13, title: 'No-Dues Crossing', game: 'Laptop Run' },
+  { id: 14, title: 'Reply-All Storm', game: 'Inbox Invaders' },
+  { id: 17, title: 'One Last Quick Call', game: 'Office Brawl (2D fight)' },
+  { id: 15, title: 'The Relieving Letter', game: 'Final Boss' },
+  { id: 18, title: 'Stress Buster', game: 'Smash the office (bonus)', bonus: true },
+];
 
 export const ENDINGS = {
   exploring: 'ending:EXPLORING OPPORTUNITIES',
@@ -43,8 +66,8 @@ export function clampMeters(m: Meters): Meters {
 }
 
 export function winEnding(stars: Record<number, number>, blame: number): { title: string; blurb: string } {
-  const total = Array.from({ length: 15 }, (_, i) => stars[i + 1] ?? 0).reduce((a, b) => a + b, 0);
-  if (total >= RULES.cleanStars) return { title: 'THE CLEAN GETAWAY', blurb: `${total} of 45 stars. Legends speak of you in the canteen.` };
+  const total = Object.values(stars).reduce((a, b) => a + b, 0);
+  if (total >= RULES.cleanStars) return { title: 'THE CLEAN GETAWAY', blurb: `${total} of 51 stars. Legends speak of you in the canteen.` };
   if (blame <= RULES.boomerangBlame) return { title: 'THE BOOMERANG', blurb: '"Door\'s always open!" (It isn\'t.)' };
   return { title: 'RELIEVED', blurb: 'Signed, stamped, and out. Mostly in one piece.' };
 }

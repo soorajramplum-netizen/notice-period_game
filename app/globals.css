@@ -147,3 +147,20 @@ main { color: var(--ink); max-width: 480px; margin: 0 auto; min-height: 100dvh; 
 .stargrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; width: 100%; }
 .stargrid span { background: #fff; border: 2px solid var(--ink); text-align: center; color: var(--red); font-size: 13px; }
 .over p { font-weight: 700; }
+
+/* ---------- mode select + free play ---------- */
+.mode-card { width: 100%; max-width: 380px; background: #fff; border: 4px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); padding: 14px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.mode-title { font-family: var(--font-bangers); font-size: 28px; letter-spacing: 1px; }
+.mode-sub { font-size: 14px; font-weight: 700; }
+.free { padding-top: 12px; display: flex; flex-direction: column; gap: 12px; }
+.free-top { display: flex; align-items: center; gap: 8px; }
+.seg { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.fp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.fp-card { text-align: left; display: flex; flex-direction: column; gap: 2px; background: #fff; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 10px; cursor: pointer; font: inherit; color: var(--ink); }
+.fp-card:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+.fp-card.bonus { background: var(--yellow); }
+.fp-no { font-family: var(--font-bangers); color: var(--red); letter-spacing: 1px; }
+.fp-title { font-family: var(--font-bangers); font-size: 20px; line-height: 1; }
+.fp-game { font-size: 12px; font-weight: 700; opacity: 0.75; }
+.fp-best { color: var(--red); font-size: 16px; }
+.fp-intro { color: #fff; font-size: 12px; opacity: 0.85; }

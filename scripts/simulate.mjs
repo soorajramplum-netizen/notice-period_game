@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const comic = JSON.parse(readFileSync(join(root, 'content', 'comic.json'), 'utf8')).sequences;
 // Keep in sync with lib/rules.ts
-const RULES = JSON.parse(process.env.RULES || '{"start":{"job":0,"blame":10,"sanity":7},"offerThreshold":50,"blameLimit":100,"boomerangBlame":5,"cleanStars":40}');
+const RULES = JSON.parse(process.env.RULES || '{"start":{"job":0,"blame":10,"sanity":7},"offerThreshold":50,"blameLimit":100,"boomerangBlame":5,"cleanStars":45}');
 
 const PLAYERS = {
   struggling: { p3: 0.15, p2: 0.45 }, // rest = 0 stars

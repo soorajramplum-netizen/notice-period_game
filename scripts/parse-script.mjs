@@ -81,7 +81,7 @@ for (const raw of rawLines) {
   if (line === '---') continue;
 
   if (line === '### COVER') { item = { type: 'cover', desc: '', tagline: '' }; seq.items.push(item); mode = 'cover'; panel = null; continue; }
-  if ((m = line.match(/^### PAGE (\d+)(?::\s*(.+))?$/))) {
+  if ((m = line.match(/^### PAGE (\d+[A-Z]?)(?::\s*(.+))?$/))) {
     item = { type: 'page', label: m[2] || '', panels: [] }; seq.items.push(item); mode = 'page'; panel = null;
     if (m[2]) newPanel(/POST-CREDITS/i.test(m[2]) ? 'panel' : /CLIFFHANGER/i.test(m[2]) ? 'panel' : 'splash', m[2], '');
     if (/CLIFFHANGER|POST-CREDITS/i.test(m[2] || '')) { item.panels.pop(); panel = null; }

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { LEVEL_GAMES } from '@/lib/rules';
 
-type Row = { level: number; key: string; skill: string; counts: number[]; avgStars: number; avgSeconds: number };
+type Row = { level: number; key: string; skill: string; counts: number[]; avgStars: number; avgSeconds: number; avgScore?: number | null };
 
 /** Runs every mini game with an average and a skilled bot, then prints the star spread. */
 export default function BotLab() {
@@ -19,16 +19,17 @@ export default function BotLab() {
       const only = q.get('levels')?.split(',').map(Number);
       const out: Row[] = [];
       const levels = Object.keys(LEVEL_GAMES).map(Number).filter((n) => !only || only.includes(n));
-      const plan: { level: number; skill: string; k: number; hard?: boolean }[] = [];
+      const plan: { level: number; skill: string; k: number; hard?: boolean; diff?: 'easy' | 'hard' }[] = [];
       for (const level of levels) {
         plan.push({ level, skill: 'average', k: 0.45 }, { level, skill: 'skilled', k: 0.9 });
-        if (level === 9) plan.push({ level, skill: 'average (hard mode)', k: 0.45, hard: true });
+        plan.push({ level, skill: 'average · Free Play easy', k: 0.45, diff: 'easy' }, { level, skill: 'average · Free Play hard', k: 0.45, diff: 'hard' });
+        if (level === 9) plan.push({ level, skill: 'average (story hard mode)', k: 0.45, hard: true });
       }
       for (const p of plan) {
         if (stop) return;
         setStatus(`Level ${p.level} · ${p.skill}…`);
         try {
-          const r = await runLevel(LEVEL_GAMES[p.level], runs, p.k, { hard: !!p.hard });
+          const r = await runLevel(LEVEL_GAMES[p.level], runs, p.k, { hard: !!p.hard || (p.diff === 'hard' && (p.level === 9 || p.level === 12)), difficulty: p.diff });
           out.push({ level: p.level, key: LEVEL_GAMES[p.level], skill: p.skill, ...r });
         } catch (e) {
           out.push({ level: p.level, key: LEVEL_GAMES[p.level], skill: p.skill + ' ERROR ' + String(e), counts: [0, 0, 0, 0], avgStars: 0, avgSeconds: 0 });
@@ -57,7 +58,7 @@ export default function BotLab() {
           ))}
         </tbody>
       </table>
-      {done && <pre id="out">{JSON.stringify(rows.map((r) => [r.level, r.skill, r.counts.join('/'), r.avgStars, r.avgSeconds]))}</pre>}
+      {done && <pre id="out">{JSON.stringify(rows.map((r) => [r.level, r.skill, r.counts.join('/'), r.avgStars, r.avgSeconds, r.avgScore]))}</pre>}
     </main>
   );
 }

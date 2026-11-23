@@ -21,7 +21,7 @@ export default class Pong extends MiniGame {
   bossOn = false;
 
   create() {
-    this.points = 0; this.misses = 0; this.vendorHits = 0; this.bossOn = false; this.speed = 260;
+    this.points = 0; this.misses = 0; this.vendorHits = 0; this.bossOn = false; this.speed = 260 * (1 + this.stress * 0.25);
     this.paper(0xfdf0e6);
     this.hud('BLAME PONG');
     TARGETS.forEach((t) => {

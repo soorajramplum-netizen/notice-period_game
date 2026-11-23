@@ -61,6 +61,22 @@ First look at him: crisp shirt, lanyard like a medal, a smile with too many teet
 `{HERO}:` My rent went up twelve.
 `CAPTAIN QUICK-CALL:` Think of it as an investment. In your patience.
 
+### PAGE 3A
+**PANEL 1.** Back at the desk. Captain Quick-Call drops a printed copy of the appraisal on {HERO}'s keyboard. Then a second copy, "for your records". Then a third, "for HR".
+`CAPTAIN QUICK-CALL:` Sign all three. Physically. We're old school about feedback.
+
+**PANEL 2 (close-up).** {HERO} crumples the first copy into a tight ball. Across the aisle, past the Yes-Men's desks, sits the office bin. A desk fan creaks back and forth.
+`CAPTION:` Some people meditate. {HERO} had a bin and ten printouts.
+`SFX:` KRRRNCH
+
+### ▶ LEVEL 16: THE BIN (mini game: Paper Toss)
+**Intro card:** *"Ten printouts. One bin. One office fan that hates you."*
+
+**Result panels**
+- **★★★** Nothing but bin. A Yes-Man looks up, almost impressed. `{HERO} (thought):` First thing I've finished here in months. **[🔋 +1]**
+- **★–★★** Most of them land. One bounces off the rim and rolls under Captain Quick-Call's chair. He doesn't notice. Yet.
+- **No stars** Paper everywhere. Admin sends an all-staff email: "Reminder: Clean Desk Policy". It is very clearly about {HERO}. **[🎯 +5]**
+
 ### PAGE 4
 **PANEL 1.** The open office. A huge TV on the wall shows **THE OVERLORD**, the CEO: a giant, glowing head, filmed from below like a statue.
 `THE OVERLORD:` RECORD PROFITS THIS YEAR, FAMILY!
@@ -809,6 +825,31 @@ Cover text: **NOTICE PERIOD #5 · THE GREAT ESCAPE** · tagline: **"Fifteen days
 - **★★★** Inbox: zero. A single reply survives, from Chai Uncle: "Come for one last chai." **[🔋 +2]**
 - **★–★★** The storm settles at 237 replies. `CAPTION:` Three people unsubscribed from the company. **[🔋 +1]**
 - **No stars** The mail server crashes. The Overlord's hologram flickers: WHO DID THIS? Every arm points, one last time. **[🎯 +15]**
+
+### PAGE 3A
+**PANEL 1.** The Reply-All storm finally settles. {HERO} grabs the backpack and heads for the exit. The corridor is empty. Too empty.
+`CAPTION:` DAY 56. 6:58 PM. Two minutes to freedom.
+
+**PANEL 2 (wide).** At the glass exit door, a silhouette. Phone in hand. Lanyard swinging like a pendulum. Captain Quick-Call.
+`CAPTAIN QUICK-CALL:` Leaving without our one last quick call?
+`SFX:` CLICK.
+
+**PANEL 3 (close-up).** {HERO} drops the backpack and rolls up their sleeves.
+`{HERO}:` I'm off the clock.
+`CAPTAIN QUICK-CALL:` Nobody is ever off the clock.
+
+### PAGE 3B: SPLASH
+The two face off in the empty office. Cubicle walls form an arena. The green EXIT sign glows behind the Captain. The fluorescent lights flicker like a stadium.
+`CAPTION:` Every hero gets one fair fight.
+`SFX:` ROUND 1 · FIGHT!
+
+### ▶ LEVEL 17: ONE LAST QUICK CALL (mini game: Office Brawl)
+**Intro card:** *"He's blocking the exit. Punch, kick, block, and charge up your resignation letter."*
+
+**Result panels**
+- **★★★** K.O.! Captain Quick-Call's phone skids across the carpet. The screen reads "Call ended · 0:47". `CAPTAIN QUICK-CALL:` ...Let's circle back. Never. **[🎯 −15] [🔋 +2]**
+- **★–★★** {HERO} wins, barely, collar askew. The Captain picks up his phone and pretends he was leaving anyway. `CAPTAIN QUICK-CALL:` Good chat. **[🎯 −5]**
+- **No stars** The Captain dusts off his shirt and sends a fresh invite: "Q1 Planning (owner: {HERO})". `CAPTAIN QUICK-CALL:` See you Monday! **[🎯 +15] [🔋 −2]**
 
 ### PAGE 4
 **PANEL 1.** The canteen, last chai. Chai Uncle pours the long golden arc one final time.

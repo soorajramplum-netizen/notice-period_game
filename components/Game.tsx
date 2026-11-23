@@ -5,16 +5,29 @@ import { Button } from '@astryxdesign/core/Button';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { ProgressBar } from '@astryxdesign/core/ProgressBar';
 import comicData from '@/content/comic.json';
-import type { Comic, Device, Effects, LevelItem, Meters, PageItem } from '@/lib/types';
-import { RULES, LEVEL_GAMES, ENDINGS, SECOND_CHANCE, HERO_LOOKS, clampMeters, winEnding } from '@/lib/rules';
+import type { Comic, Device, Difficulty, Effects, LevelItem, Meters, PageItem } from '@/lib/types';
+import { RULES, LEVEL_GAMES, FREE_PLAY, ENDINGS, SECOND_CHANCE, HERO_LOOKS, clampMeters, winEnding } from '@/lib/rules';
 import { CoverView, PageView, PanelView, FxChips, type Ctx } from './Comic';
 import { Figure } from './Figures';
 
 const PhaserHost = dynamic(() => import('@/games/PhaserHost'), { ssr: false });
 const comic = comicData as unknown as Comic;
 const SAVE_KEY = 'notice-period-save-v1';
+const FREE_KEY = 'notice-period-free-v1';
 
-type Mode = 'title' | 'setup' | 'story' | 'intro' | 'play' | 'result' | 'over' | 'win';
+/** Story levels in the order players meet them (ids are stable; the number shown is this order). */
+const STORY_ORDER: number[] = [1, 2, 3, 4, 5].flatMap((n) =>
+  comic.sequences[`issue${n}`].items.flatMap((i) => (i.type === 'level' ? [i.n] : [])),
+);
+const levelNo = (id: number) => STORY_ORDER.indexOf(id) + 1;
+const findLevel = (id: number) => {
+  for (const sq of Object.values(comic.sequences)) for (const i of sq.items) if (i.type === 'level' && i.n === id) return i;
+  return null;
+};
+type Best = Record<string, number>; // `${id}:${difficulty}` -> best stars
+function loadBest(): Best { try { return JSON.parse(localStorage.getItem(FREE_KEY) || '{}') as Best; } catch { return {}; } }
+
+type Mode = 'title' | 'setup' | 'story' | 'intro' | 'play' | 'result' | 'over' | 'win' | 'free' | 'fplay' | 'fresult';
 type Pos = { seq: string; idx: number };
 type Save = {
   name: string; lookId: string; notes: boolean; device: Device;
@@ -49,12 +62,19 @@ export default function Game() {
   const [hasSave, setHasSave] = useState(false);
   const [lastResult, setLastResult] = useState<{ level: LevelItem; stars: number } | null>(null);
   const [lvlOverride, setLvlOverride] = useState<LevelItem | null>(null);
+  // Free Play
+  const [fpId, setFpId] = useState<number>(16);
+  const [diff, setDiff] = useState<Difficulty>('medium');
+  const [fpRun, setFpRun] = useState(0);
+  const [fpStars, setFpStars] = useState(0);
+  const [best, setBest] = useState<Best>({});
 
   // Reads the device save once on mount (localStorage only exists in the browser, so this can't be initial state).
   useEffect(() => {
     const s = loadSave();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (s) { setHasSave(true); setSave(s); }
+    setBest(loadBest());
     // Dev shortcut: /?level=7 opens that level's intro; add &autoplay=1 to start it straight away.
     const q = new URLSearchParams(window.location.search);
     const n = Number(q.get('level'));
@@ -178,6 +198,24 @@ export default function Game() {
   };
   const startOver = () => { setLvlOverride(null); setSave(fresh(save.name, save.lookId, save.notes, save.device)); setMode('story'); };
 
+  const fpDone = (stars: number) => {
+    setFpStars(stars);
+    const k = `${fpId}:${diff}`;
+    const nb = { ...best, [k]: Math.max(best[k] ?? 0, stars) };
+    setBest(nb);
+    try { localStorage.setItem(FREE_KEY, JSON.stringify(nb)); } catch { /* storage is optional */ }
+    setMode('fresult');
+  };
+
+  /** Where Continue will take you, in words. */
+  const resumeLabel = (() => {
+    const sq = comic.sequences[save.pos.seq];
+    if (!sq) return 'Continue';
+    const it = sq.items[save.pos.idx];
+    const where = sq.kind === 'issue' ? `#${sq.num} ${sq.title}` : sq.title;
+    return it?.type === 'level' ? `Continue · ${where} · Level ${levelNo(it.n) || ''}` : `Continue · ${where}`;
+  })();
+
   const gameCtx = {
     device: save.device,
     sanity: save.meters.sanity,
@@ -194,14 +232,86 @@ export default function Game() {
       <main className="title-screen">
         <div className="logo">NOTICE<br />PERIOD</div>
         <div className="byline">By Sooraj Ram</div>
-        <div className="logo-sub">A motion comic in 5 issues · 15 mini games · ~25 min</div>
+        <div className="logo-sub">A motion comic in 5 issues · 17 levels · ~30 min</div>
         <svg viewBox="0 0 120 140" className="title-fig"><Figure id="hero" mood="shout" look={HERO_LOOKS[0]} /></svg>
         <div className="title-quote">&ldquo;Got 5 mins? 🙂&rdquo;</div>
-        <div className="title-btns">
-          {hasSave && <Button label="Continue" variant="primary" size="lg" onClick={() => setMode(save.pos.idx === 0 && comic.sequences[save.pos.seq]?.items[0]?.type === 'cover' ? 'story' : comic.sequences[save.pos.seq]?.items[save.pos.idx]?.type === 'level' ? 'intro' : 'story')} />}
-          <Button label={hasSave ? 'New game' : 'Start'} variant={hasSave ? 'secondary' : 'primary'} size="lg" onClick={() => setMode('setup')} />
+        <div className="mode-card">
+          <div className="mode-title">📖 STORY MODE</div>
+          <div className="mode-sub">The full comic. Progress saves on this device, so you can stop any time and pick up where you left off.</div>
+          <div className="title-btns">
+            {hasSave && <Button label={resumeLabel} variant="primary" size="lg" onClick={() => setMode(comic.sequences[save.pos.seq]?.items[save.pos.idx]?.type === 'level' ? 'intro' : 'story')} />}
+            <Button label={hasSave ? 'New story' : 'Start the story'} variant={hasSave ? 'secondary' : 'primary'} size="lg" onClick={() => setMode('setup')} />
+          </div>
+        </div>
+        <div className="mode-card">
+          <div className="mode-title">🎮 FREE PLAY</div>
+          <div className="mode-sub">Skip the story. Pick any game, choose Easy, Medium or Hard, and chase three stars.</div>
+          <div className="title-btns"><Button label="Play the games" variant="secondary" size="lg" onClick={() => setMode('free')} /></div>
         </div>
         <p className="fine">All characters and companies are fictional. Any resemblance to your manager is your manager&apos;s problem.</p>
+      </main>
+    );
+  }
+
+  if (mode === 'free') {
+    return (
+      <main className="free">
+        <div className="free-top">
+          <Button label="◀ Title" variant="ghost" onClick={() => setMode('title')} />
+          <h1 className="setup-h">FREE PLAY</h1>
+        </div>
+        <div className="seg">
+          {(['easy', 'medium', 'hard'] as Difficulty[]).map((d) => (
+            <Button key={d} label={d === 'easy' ? '😌 Easy' : d === 'medium' ? '😐 Medium' : '😤 Hard'} variant={diff === d ? 'primary' : 'secondary'} onClick={() => setDiff(d)} />
+          ))}
+        </div>
+        <div className="seg">
+          <Button label="📱 Phone" variant={save.device === 'mobile' ? 'primary' : 'secondary'} onClick={() => setSave({ ...save, device: 'mobile' })} />
+          <Button label="💻 Computer" variant={save.device === 'desktop' ? 'primary' : 'secondary'} onClick={() => setSave({ ...save, device: 'desktop' })} />
+        </div>
+        <div className="fp-grid">
+          {FREE_PLAY.map((g, i) => {
+            const b = best[`${g.id}:${diff}`] ?? 0;
+            return (
+              <button key={g.id} className={`fp-card ${g.bonus ? 'bonus' : ''}`} onClick={() => { setFpId(g.id); setFpRun((r) => r + 1); setMode('fplay'); }}>
+                <span className="fp-no">{g.bonus ? 'BONUS' : `#${i + 1}`}</span>
+                <span className="fp-title">{g.title}</span>
+                <span className="fp-game">{g.game}</span>
+                <span className="fp-best">{'★'.repeat(b)}{'☆'.repeat(3 - b)}</span>
+              </button>
+            );
+          })}
+        </div>
+      </main>
+    );
+  }
+
+  if (mode === 'fplay' || mode === 'fresult') {
+    const g = FREE_PLAY.find((x) => x.id === fpId)!;
+    const lv = findLevel(fpId);
+    return (
+      <main className="playwrap">
+        <div className="hud">
+          <div className="hud-title">FREE PLAY · {g.title} · {diff.toUpperCase()}</div>
+          {lv?.intro && <div className="fp-intro">{lv.intro}</div>}
+        </div>
+        {mode === 'fplay' ? (
+          <PhaserHost
+            key={`fp-${fpId}-${diff}-${fpRun}`}
+            gameKey={LEVEL_GAMES[fpId]}
+            ctx={{ ...gameCtx, difficulty: diff, sanity: 7, hard: diff === 'hard' && (fpId === 9 || fpId === 12), done: fpDone }}
+          />
+        ) : (
+          <div className="intro-card">
+            <div className="lvl-title">{g.title}</div>
+            <div className="result-stars">{'★'.repeat(fpStars)}{'☆'.repeat(3 - fpStars)}</div>
+            <p className="lvl-intro">Best on {diff}: {'★'.repeat(best[`${fpId}:${diff}`] ?? 0) || 'none yet'}</p>
+            <div className="title-btns">
+              <Button label="Play again" variant="primary" onClick={() => { setFpRun((r) => r + 1); setMode('fplay'); }} />
+              <Button label="All games" onClick={() => setMode('free')} />
+            </div>
+          </div>
+        )}
       </main>
     );
   }
@@ -248,7 +358,7 @@ export default function Game() {
   if (mode === 'win') {
     const end = winEnding(save.stars, save.meters.blame);
     const total = Object.values(save.stars).reduce((a, b) => a + b, 0);
-    const share = `NOTICE PERIOD: ${ctx.name} got "${end.title}". ⭐ ${total}/45 · Blamed ${save.stats.blamed} times · Blame left: ${save.meters.blame}. Got 5 mins? 🙂`;
+    const share = `NOTICE PERIOD: ${ctx.name} got "${end.title}". ⭐ ${total}/51 · Blamed ${save.stats.blamed} times · Blame left: ${save.meters.blame}. Got 5 mins? 🙂`;
     return (
       <main className="win">
         <div className="share-card">
@@ -259,10 +369,10 @@ export default function Game() {
           <div className="ending-hero">starring {ctx.name}</div>
           <p className="ending-blurb">{end.blurb}</p>
           <div className="stats">
-            <span>⭐ {total}/45</span><span>🎯 blamed {save.stats.blamed}×</span><span>🧾 choices {save.stats.choices}</span>
+            <span>⭐ {total}/51</span><span>🎯 blamed {save.stats.blamed}×</span><span>🧾 choices {save.stats.choices}</span>
           </div>
           <div className="stargrid">
-            {Array.from({ length: 15 }, (_, i) => <span key={i}>{'★'.repeat(save.stars[i + 1] ?? 0) || '·'}</span>)}
+            {STORY_ORDER.map((id) => <span key={id}>{'★'.repeat(save.stars[id] ?? 0) || '·'}</span>)}
           </div>
         </div>
         <div className="title-btns">
@@ -292,7 +402,7 @@ export default function Game() {
         {hud}
         {mode === 'intro' ? (
           <div className="intro-card">
-            <div className="lvl-no">LEVEL {level.n}</div>
+            <div className="lvl-no">LEVEL {levelNo(level.n)} OF {STORY_ORDER.length}</div>
             <div className="lvl-title">{level.title}</div>
             <div className="lvl-game">{level.game}</div>
             <p className="lvl-intro">{level.intro}</p>

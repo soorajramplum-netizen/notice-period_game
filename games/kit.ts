@@ -38,7 +38,7 @@ export abstract class MiniGame extends Phaser.Scene {
   down(name: string) {
     const kb = this.input.keyboard;
     if (!kb) return false;
-    this.keyMap ??= kb.addKeys('LEFT,RIGHT,UP,DOWN,SPACE,ONE,TWO,THREE,FOUR,FIVE') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keyMap ??= kb.addKeys('LEFT,RIGHT,UP,DOWN,SPACE,ONE,TWO,THREE,FOUR,FIVE,Z,X,C') as Record<string, Phaser.Input.Keyboard.Key>;
     return !!this.keyMap[name]?.isDown;
   }
 
@@ -48,8 +48,11 @@ export abstract class MiniGame extends Phaser.Scene {
     return Phaser.Input.Keyboard.JustDown(this.keyMap![name]);
   }
 
-  /** 0 (calm) .. 1 (frazzled), from Sanity. Use it to add wobble or speed. */
+  /** Difficulty dial used by every game for speed and wobble. Story: from Sanity (0 calm .. 1 frazzled).
+   *  Free Play: Easy -0.35 (gentler than the story), Medium 0.15, Hard 0.75. */
   get stress() {
+    const d = this.ctx.difficulty;
+    if (d) return (d === 'easy' ? -0.35 : d === 'medium' ? 0.15 : 0.75) + (this.ctx.hard ? 0.35 : 0);
     return Math.max(0, Math.min(1, (6 - this.ctx.sanity) / 6)) + (this.ctx.hard ? 0.35 : 0);
   }
 

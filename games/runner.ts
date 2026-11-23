@@ -64,7 +64,7 @@ export default class Runner extends MiniGame {
       : this.add.rectangle(0, -20, w, 40, C.orange).setStrokeStyle(3, INK);
     const t = this.body(0, kind === 'high' ? -86 : -20, label, 10);
     this.obs.push({ o: this.add.container(W + 60, GROUND, [r, t]), kind, w: kind === 'high' ? 90 : w, hit: false });
-    this.time.delayedCall(Phaser.Math.Between(900, 1500) - this.stress * 200, () => this.spawnLoop());
+    this.time.delayedCall(Phaser.Math.Between(900, 1500) - this.stress * 120, () => this.spawnLoop());
   }
 
   jump() { if (this.y >= GROUND && this.sliding <= 0) this.vy = -620; }

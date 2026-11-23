@@ -9,6 +9,7 @@ const LOADERS: Record<string, () => Promise<{ default: unknown }>> = {
   alttab: () => import('./alttab'), stealth: () => import('./stealth'), stack: () => import('./stack'),
   runner: () => import('./runner'), pour: () => import('./pour'), poker: () => import('./poker'),
   crossing: () => import('./crossing'), invaders: () => import('./invaders'), boss: () => import('./boss'),
+  toss: () => import('./toss'), fight: () => import('./fight'), smash: () => import('./smash'),
 };
 
 export default function PhaserHost({ gameKey, ctx }: { gameKey: string; ctx: GameCtx }) {
